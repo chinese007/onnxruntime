@@ -465,8 +465,19 @@ class InferenceSession::Impl {
                   });
 
     if (!missing_required_inputs.empty()) {
-      return ORT_MAKE_STATUS(ONNXRUNTIME, INVALID_ARGUMENT,
-                             "Missing required inputs: ", missing_required_inputs);
+      if (feeds.size() > 10)
+        return ORT_MAKE_STATUS(ONNXRUNTIME, INVALID_ARGUMENT,
+                               "Missing required inputs: ", missing_required_inputs);
+      else {
+        std::ostringstream oss;
+        oss << "Missing required inputs: " << missing_required_inputs;
+        oss << ", Got [";
+        for (const auto& pair : feeds) {
+          oss << " '" << pair.first << "'";
+        }
+        oss << "]";
+        return Status(common::ONNXRUNTIME, common::INVALID_ARGUMENT, oss.str());
+      }
     }
 
     bool valid = true;
