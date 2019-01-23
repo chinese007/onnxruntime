@@ -7,8 +7,8 @@ rm -f /tmp/ninja-linux.zip
 #install protobuf
 mkdir -p /tmp/src
 mkdir -p /opt/cmake
-aria2c -q -d /tmp/src https://github.com/Kitware/CMake/releases/download/v3.13.2/cmake-3.13.2-Linux-x86_64.tar.gz
-tar -xf /tmp/src/cmake-3.13.2-Linux-x86_64.tar.gz --strip 1 -C /opt/cmake
+aria2c -q -d /tmp/src https://github.com/Kitware/CMake/releases/download/v3.13.3/cmake-3.13.3-Linux-x86_64.tar.gz
+tar -xf /tmp/src/cmake-3.13.3-Linux-x86_64.tar.gz --strip 1 -C /opt/cmake
 aria2c -q -d /tmp/src https://github.com/protocolbuffers/protobuf/archive/v3.6.1.tar.gz
 tar -xf /tmp/src/protobuf-3.6.1.tar.gz -C /tmp/src
 cd /tmp/src/protobuf-3.6.1
