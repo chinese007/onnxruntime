@@ -27,6 +27,33 @@ typedef char PATH_CHAR_TYPE;
 template <typename T>
 long MyStrtol(const T* nptr, T** endptr, int base);
 
+/**
+ * Convert a C string to ssize_t(or ptrdiff_t)
+ * @return the converted integer value.
+ */
+template <typename T>
+ptrdiff_t MyStrtoPtrDiff(const T* nptr, T** endptr, int base);
+
+template <>
+inline ptrdiff_t MyStrtoPtrDiff<wchar_t>(const wchar_t* nptr, wchar_t** endptr, int base) {
+#ifdef _WIN32
+  //TODO: on x86_32, it should be wcstol
+  return _wcstoi64(nptr, endptr, base);
+#else
+  return wcstol(nptr, endptr, base);
+#endif
+}
+
+template <>
+inline ptrdiff_t MyStrtoPtrDiff<char>(const char* nptr, char** endptr, int base) {
+#ifdef _WIN32
+  //TODO: on x86_32, it should be strtol
+  return _strtoi64(nptr, endptr, base);
+#else
+  return strtol(nptr, endptr, base);
+#endif
+}
+
 template <>
 inline long MyStrtol<char>(const char* nptr, char** endptr, int base) {
   return strtol(nptr, endptr, base);

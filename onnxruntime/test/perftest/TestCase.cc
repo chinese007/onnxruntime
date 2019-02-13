@@ -221,7 +221,7 @@ Status LoopDataFile(int test_data_pb_fd, AllocatorPtr allocator,
         st = RichTypeProtoToMLValue<decltype(data.map_int64_to_double().v()), MapInt64ToDouble>(data.map_int64_to_double().v(), value);
         break;
       case proto::TraditionalMLData::kTensor:
-        st = utils::TensorProtoToMLValue(data.tensor(), allocator, nullptr, 0, value);
+        st = utils::TensorProtoToMLValue(std::string(), data.tensor(), allocator, nullptr, 0, value);
         break;
       default:
         st = Status(ONNXRUNTIME, NOT_IMPLEMENTED, "unknown data type inside TraditionalMLData");
@@ -461,7 +461,7 @@ Status OnnxTestCase::FromPbFiles(const std::vector<path>& files, std::vector<MLV
       }
     }
     MLValue value;
-    ORT_RETURN_IF_ERROR(onnxruntime::utils::TensorProtoToMLValue(tensor, allocator_, nullptr, 0, value));
+    ORT_RETURN_IF_ERROR(onnxruntime::utils::TensorProtoToMLValue(f.string(), tensor, allocator_, nullptr, 0, value));
     output_values.emplace_back(value);
   }
   return Status::OK();
@@ -534,7 +534,7 @@ Status OnnxTestCase::ConvertTestData(const std::vector<onnx::TensorProto>& test_
     std::string name = var_names[input_index];
     const onnx::TensorProto& input = test_data_pbs[input_index];
     MLValue v1;
-    ORT_RETURN_IF_ERROR(utils::TensorProtoToMLValue(input, allocator_, nullptr, 0, v1));
+    ORT_RETURN_IF_ERROR(utils::TensorProtoToMLValue(std::string(), input, allocator_, nullptr, 0, v1));
     out.insert(std::make_pair(name, v1));
   }
   return Status::OK();

@@ -286,12 +286,8 @@ void RunModelWithBindingMatMul(InferenceSession& session_object,
     auto element_type = rtensor.DataType();
     auto& shape = rtensor.Shape();
     auto cpu_allocator = TestCPUExecutionProvider()->GetAllocator(0, OrtMemTypeDefault);
-    void* buffer = cpu_allocator->Alloc(element_type->Size() * shape.Size());
-    ORT_ENFORCE(buffer);
     std::unique_ptr<Tensor> cpu_tensor = std::make_unique<Tensor>(element_type,
                                                                   shape,
-                                                                  buffer,
-                                                                  cpu_allocator->Info(),
                                                                   cpu_allocator);
     st = TestCudaExecutionProvider()->CopyTensor(rtensor, *cpu_tensor.get());
     ASSERT_TRUE(st.IsOK());

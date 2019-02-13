@@ -10,7 +10,7 @@
 #include "core/common/common.h"
 #include "core/platform/env.h"
 #include "core/session/onnxruntime_cxx_api.h"
-#include "path_lib.h"
+#include <core/framework/path_lib.h>
 //TODO: delete this
 #include <core/platform/ort_mutex.h>
 #include <core/framework/data_types.h>

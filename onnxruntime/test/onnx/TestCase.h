@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include <core/common/status.h>
 #include <core/session/onnxruntime_cxx_api.h>
-#include "path_lib.h"
+#include <core/framework/path_lib.h>
 
 namespace ONNX_NAMESPACE {
 class ValueInfoProto;

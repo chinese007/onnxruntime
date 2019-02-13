@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-#include "core/framework/tensorutils.h"
+#include "core/framework/tensorprotoutils.h"
 #include "core/providers/cpu/generator/constant_of_shape.h"
 #include "gsl/span"
 
@@ -29,11 +29,11 @@ ONNX_CPU_OPERATOR_KERNEL(
                                   DataTypeImpl::GetTensorType<bool>()}),
     ConstantOfShape);
 
-#define FETCH_VALUE_DATA(field, c_type)                                                                \
-  {                                                                                                    \
-    c_type t;                                                                                          \
-    ORT_ENFORCE(TensorUtils::UnpackTensor(t_proto, &t, 1).IsOK(), "Value attribute unpacking failed"); \
-    field = t;                                                                                         \
+#define FETCH_VALUE_DATA(field, c_type)                                                   \
+  {                                                                                       \
+    c_type t;                                                                             \
+    ORT_ENFORCE(UnpackTensor(t_proto, &t, 1).IsOK(), "Value attribute unpacking failed"); \
+    field = t;                                                                            \
   }
 
 void onnxruntime::ConstantOfShape::SetValue(const ONNX_NAMESPACE::TensorProto& t_proto) {

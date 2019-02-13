@@ -58,14 +58,16 @@ using BufferNakedPtr = void*;
 class Tensor final {
  public:
   /**
-     Create tensor with given type, shape, pre-allocate memory and allocator info.
-  */
-  Tensor(MLDataType p_type,
-         const TensorShape& shape,
-         BufferNakedPtr p_data,
-         const OrtAllocatorInfo& alloc,
-         AllocatorPtr deleter = nullptr,
+   * Create tensor with given type, shape, pre-allocate memory and allocator info.
+   */
+  Tensor(MLDataType p_type, const TensorShape& shape, BufferNakedPtr p_data, const OrtAllocatorInfo& alloc,
          int64_t offset = 0);
+
+  /**
+   * Deprecated. The orginal design is the Tensor class won't do any allocation / release.
+   * This function will do placement new if p_type is string tensor.
+   */
+  Tensor(MLDataType p_type, const TensorShape& shape, std::shared_ptr<IAllocator> allocator, int64_t offset = 0);
 
   ~Tensor();
 
@@ -177,7 +179,6 @@ class Tensor final {
   void Init(MLDataType p_type,
             const TensorShape& shape,
             void* p_raw_data,
-            const OrtAllocatorInfo& alloc,
             AllocatorPtr deleter,
             int64_t offset = 0);
 

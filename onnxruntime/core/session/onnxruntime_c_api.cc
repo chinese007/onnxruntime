@@ -163,25 +163,12 @@ ORT_API_STATUS_IMPL(OrtFillStringTensor, _In_ OrtValue* value, _In_ const char* 
 template <typename T>
 OrtStatus* CreateTensorImpl(const size_t* shape, size_t shape_len, OrtAllocator* allocator,
                             std::unique_ptr<Tensor>* out) {
-  size_t elem_count = 1;
   std::vector<int64_t> shapes(shape_len);
   for (size_t i = 0; i != shape_len; ++i) {
-    elem_count *= shape[i];
     shapes[i] = shape[i];
   }
-
-  size_t size_to_allocate;
-  if (!IAllocator::CalcMemSizeForArray(sizeof(T), elem_count, &size_to_allocate)) {
-    return OrtCreateStatus(ORT_FAIL, "not enough memory");
-  }
-  void* p_data = allocator->Alloc(allocator, size_to_allocate);
-  if (p_data == nullptr)
-    return OrtCreateStatus(ORT_FAIL, "size overflow");
-  *out = std::make_unique<Tensor>(DataTypeImpl::GetType<T>(),
-                                  onnxruntime::TensorShape(shapes),
-                                  static_cast<void*>(p_data),
-                                  *allocator->Info(allocator),
-                                  std::make_shared<onnxruntime::AllocatorWrapper>(allocator));
+  std::shared_ptr<IAllocator> alloc_ptr = std::make_shared<onnxruntime::AllocatorWrapper>(allocator);
+  *out = std::make_unique<Tensor>(DataTypeImpl::GetType<T>(), onnxruntime::TensorShape(shapes), alloc_ptr);
   return nullptr;
 }
 
@@ -208,11 +195,7 @@ OrtStatus* CreateTensorImpl(const size_t* shape, size_t shape_len, const OrtAllo
     oss << "not enough space: expected " << size_to_allocate << ", got " << p_data_len;
     return OrtCreateStatus(ORT_INVALID_ARGUMENT, oss.str().c_str());
   }
-  *out = std::make_unique<Tensor>(DataTypeImpl::GetType<T>(),
-                                  onnxruntime::TensorShape(shapes),
-                                  p_data,
-                                  *info,
-                                  nullptr);
+  *out = std::make_unique<Tensor>(DataTypeImpl::GetType<T>(), onnxruntime::TensorShape(shapes), p_data, *info);
   return nullptr;
 }
 
@@ -500,7 +483,8 @@ ORT_API_STATUS_IMPL(OrtTensorProtoToOrtValue, _Inout_ OrtAllocator* allocator,
     return OrtCreateStatus(ORT_FAIL, "parse input tensor proto failed");
   }
   std::unique_ptr<MLValue> value = std::make_unique<MLValue>();
-  Status st = onnxruntime::utils::TensorProtoToMLValue(proto, allocator_, nullptr, 0, *value);
+  //TODO:
+  Status st = onnxruntime::utils::TensorProtoToMLValue(std::string(), proto, allocator_, nullptr, 0, *value);
   if (!st.IsOK())
     return ToOrtStatus(st);
   *out = reinterpret_cast<OrtValue*>(value.release());

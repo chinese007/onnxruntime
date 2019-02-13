@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-#include "core/framework/tensorutils.h"
+#include "core/framework/tensorprotoutils.h"
 #include "core/graph/onnx_protobuf.h"
 #include "gtest/gtest.h"
 
@@ -24,7 +24,7 @@ void test_unpack_float_tensor(TensorProto_DataType type) {
   }
   float_tensor_proto.set_raw_data(rawdata, len);
   T float_data2[4];
-  auto status = TensorUtils::UnpackTensor(float_tensor_proto, float_data2, 4);
+  auto status = UnpackTensor(float_tensor_proto, float_data2, 4);
   EXPECT_TRUE(status.IsOK()) << status.ErrorMessage();
   EXPECT_EQ(1.1f, float_data2[0]);
   EXPECT_EQ(2.2f, float_data2[1]);
@@ -38,12 +38,12 @@ TEST(TensorParseTest, TensorUtilsTest) {
   bool_tensor_proto.add_int32_data(1);
 
   bool bool_data[1];
-  auto status = TensorUtils::UnpackTensor(bool_tensor_proto, bool_data, 1);
+  auto status = UnpackTensor(bool_tensor_proto, bool_data, 1);
   EXPECT_TRUE(status.IsOK()) << status.ErrorMessage();
   EXPECT_TRUE(bool_data[0]);
 
   float float_data[1];
-  status = TensorUtils::UnpackTensor(bool_tensor_proto, float_data, 1);
+  status = UnpackTensor(bool_tensor_proto, float_data, 1);
   EXPECT_FALSE(status.IsOK());
 
   test_unpack_float_tensor<float>(TensorProto_DataType_FLOAT);
@@ -55,12 +55,12 @@ TEST(TensorParseTest, TensorUtilsTest) {
   string_tensor_proto.add_string_data("b");
 
   std::string string_data[2];
-  status = TensorUtils::UnpackTensor(string_tensor_proto, string_data, 2);
+  status = UnpackTensor(string_tensor_proto, string_data, 2);
   EXPECT_TRUE(status.IsOK()) << status.ErrorMessage();
   EXPECT_EQ("a", string_data[0]);
   EXPECT_EQ("b", string_data[1]);
 
-  status = TensorUtils::UnpackTensor(bool_tensor_proto, string_data, 2);
+  status = UnpackTensor(bool_tensor_proto, string_data, 2);
   EXPECT_FALSE(status.IsOK());
 }
 }  // namespace test

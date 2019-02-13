@@ -135,11 +135,8 @@ Status ExecutionFrame::AllocateMLValueTensorSelfOwnBufferHelper(int mlvalue_inde
     }
   }
   //no memory pattern, or the pattern is not correct.
-  void* buffer = size == 0 ? nullptr : alloc->Alloc(size);
   std::unique_ptr<Tensor> p_tensor = std::make_unique<Tensor>(element_type,
                                                               shape,
-                                                              buffer,
-                                                              location,
                                                               alloc);
 
   p_mlvalue->Init(p_tensor.release(),

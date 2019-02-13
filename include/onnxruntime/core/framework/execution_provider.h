@@ -85,13 +85,17 @@ class IExecutionProvider {
   virtual std::shared_ptr<KernelRegistry> GetKernelRegistry() const = 0;
 
   /**
-     Copy tensor between execution providers
+   * Copy tensor between execution providers
+   * Either src.location is CPU, or dst.location is CPU. They can be both on CPU.
+   * Sometimes it is deep copy, sometimes it is shallow copy. Therefore, don't change the dst tensor
   */
   virtual common::Status CopyTensor(const Tensor& src, Tensor& dst) const = 0;
 
   /**
-     Copy tensor between execution providers on specified exec queue
-  */
+   *  Copy tensor between execution providers on specified exec queue
+   * Either src.location is CPU, or dst.location is CPU. They can be both on CPU.
+   * Sometimes it is deep copy, sometimes it is shallow copy. Therefore, don't change the dst tensor
+   */
   virtual common::Status CopyTensor(const Tensor& src, Tensor& dst,
                                     int exec_queue_id) const;
 

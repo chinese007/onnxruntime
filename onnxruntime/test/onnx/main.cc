@@ -13,9 +13,9 @@
 #include "TestResultStat.h"
 #include "testenv.h"
 #include "runner.h"
-#include "path_lib.h"
 #include "sync_api.h"
 #include "providers.h"
+#include "core/framework/path_lib.h"
 #include "core/session/onnxruntime_cxx_api.h"
 
 using namespace onnxruntime;
